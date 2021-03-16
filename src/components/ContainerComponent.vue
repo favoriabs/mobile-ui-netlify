@@ -1,6 +1,9 @@
 <template>
         <div id="container" :class="orientationClass" class="border-2 border-blue-400 h-3/4 bg-white rounded-lg p-10" @drop="onDrop($event, 1)" @dragover="dragOver($event)">
-            <input type="text" id="draggableText" draggable @dragstart='startDrag($event)' class="cursor-move h-20 p-5 border border-blue-400 m-5" placeholder="Enter Text Here" v-model="textContent">
+            <div v-if="savedToFireBase" class="bg-green-300 p-5 font-semibold text-center">
+                Saved to Firebase successfully (postion Y -{{$store.getters.getTextBoxOffsetY}} position X - {{$store.getters.getTextBoxOffsetX}})
+            </div>
+            <input v-if=showTextField type="text" id="draggableText" draggable @dragstart='startDrag($event)' class="cursor-move h-20 p-5 border border-blue-400 m-5" placeholder="Enter Text Here" v-model="textContent">
 
             <!-- <div id="listDiv">
                 <ol>
@@ -25,12 +28,17 @@ export default {
         saveSettings: {
             type: Boolean,
             default: false,
+        },
+        showTextField: {
+            type: Boolean,
+            default: false,
         }
     },
     data() {
         return {
             containerWidth: 'w-1/2',
             textContent: '',
+            savedToFireBase: false
         }
     },
     watch: {
@@ -45,12 +53,23 @@ export default {
                     date: new Date,
                 })
                 .then(() => {
+                    this.savedToFireBase = true;
+                    setTimeout(() => this.savedToFireBase = false, 2000);
                     console.log("Document successfully written!");
                 })
                 .catch((error) => {
                     console.error("Error writing document: ", error);
                 });
             }
+        },
+        showTextField() {
+            this.textContent = '';
+            let properties = {
+                content: this.textContent,
+                offsetY: '',
+                offsetX: '',
+            }
+            this.$store.commit('storeTextBoxProperties', properties);
         }
     },
     computed: {

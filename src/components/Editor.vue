@@ -13,13 +13,14 @@
                     <option value="sdk">SDK</option>
                     <option value="android">Android</option>
                 </select>
-                <button class="border px-5" @click="addTextField">TEXT</button>
+                <button class="border px-5" @click="toggleTextField()">TOGGLE TEXT</button>
                 <button class="border px-5">LIST</button>
             </div>
         </div>
         <container-component
             :orientation="orientation"
             :saveSettings="saveSettings"
+            :showTextField="showTextField"
         >
         </container-component>
         <!-- <div id="container" :class="containerWidth" class="border-2 border-blue-400 h-3/4 bg-white rounded-lg p-10 w-1/2" @drop="onDrop($event, 1)" @dragover="dragOver($event)"> -->
@@ -49,11 +50,12 @@ export default {
         return {
             orientation: 'landscape',
             saveSettings: false,
+            showTextField: false,
         }
     },
     methods: {
-        addTextField() {
-
+        toggleTextField() {
+            this.showTextField = !this.showTextField;
         },
         triggerOption($event) {
             if($event.target.value == 'save') {
